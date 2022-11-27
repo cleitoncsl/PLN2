@@ -1,17 +1,12 @@
 # Import Libraries
 from pandas.io.formats import string
-from textblob import TextBlob
-import sys
-import string
 import tweepy
 import unicodedata
 import matplotlib.pyplot as plt
 import pandas as pd
 import string
 import numpy as np
-import os
 import nltk
-import pycountry
 import re
 from textblob import TextBlob
 from wordcloud import WordCloud, STOPWORDS
@@ -23,8 +18,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import CountVectorizer
 
 # texto
-texto = input("Please enter keyword or hashtag to search: ")
-noOfTweet = int(input("Please enter how many tweets to analyze: "))
+texto = input("Digite o Termo ou rashtag desejado : ")
+noOfTweet = int(input("Digite a quantidade de Tweets a ser analisado: "))
 
 def percentage(part,whole):
     return 100 * float(part)/float(whole)
@@ -37,7 +32,8 @@ arquivo = diretorio + " \ " + nome
 acecessTokenBearer = "AAAAAAAAAAAAAAAAAAAAAFMOjwEAAAAAq11%2BDpuyrlaYs3K33G59O7wLYPI%3DT9utmwv7th0rZF8jCZT98yQqypAzTbO538Nnk3doe8bWnTnP2I"
 
 client = tweepy.Client(bearer_token=acecessTokenBearer)
-query = "{} is:retweet lang:pt".format(texto)
+# query = "{} is:retweet lang:pt".format(texto)
+query = "{} lang:pt".format(texto)
 paginator = tweepy.Paginator(
     client.search_recent_tweets,
     query=query,
@@ -62,7 +58,7 @@ def preprocess_tweet(sen):
     sentence = sen.lower()
 
     # Remove RT
-    sentence = re.sub('RT @\w+: ', " ", sentence)
+    sentence = re.sub('rt @\w+: ', " ", sentence)
 
     # Remove special characters
     sentence = re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", sentence)
@@ -81,9 +77,16 @@ def preprocess_tweet(sen):
 cleaned_tweets = []
 encoding = 'utf-8'
 
+# criar modulo tradutor
+
+
+
+
+# criar modulo tradutor
+
 for tweet in tweet_list_df['text']:
     pre_process_byte = unicodedata.normalize('NFD', tweet).encode('ascii', 'ignore')
-    pre_process =  pre_process_byte.decode(encoding)
+    pre_process = pre_process_byte.decode(encoding)
     cleaned_tweet = preprocess_tweet(pre_process)
     cleaned_tweets.append(cleaned_tweet)
 
@@ -237,11 +240,11 @@ def get_top_n_gram(corpus,ngram_range,n=None):
 
 #n2_bigram
 n2_bigrams = get_top_n_gram(tweet_list_df['text'],(2,2),20)
-n2_bigrams
+print(n2_bigrams)
 
 #n3_trigram
 n3_trigrams = get_top_n_gram(tweet_list_df['text'],(3,3),20)
-n3_trigrams
+print(n3_trigrams)
 
 def create_wordcloud(text):
     mask = np.array(Image.open(r"E:\Users\cleit\Documents\CURSO PYTHON\PLN2\cloud.png"))
@@ -260,4 +263,4 @@ def create_wordcloud(text):
     imagem = Image.open(arquivo_final, mode='r', formats=None)
     imagem.show()
 
-create_wordcloud(tweet_list_df["cleaned"].values)
+create_wordcloud(tweet_list_df_negative["cleaned"].values)

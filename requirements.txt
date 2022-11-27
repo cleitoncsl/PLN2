@@ -9,3 +9,6 @@ textblob
 pycountry
 scikit-learn
 langdetect
+vaderSentiment
+goslate
+googletrans
